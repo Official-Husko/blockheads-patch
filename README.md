@@ -18,6 +18,9 @@ If patching doesn't work, [this](https://github.com/sensepost/objection/wiki/And
 ## On Windows
 TODO, you should be able to use the linux steps under WSL
 
+## Using GitHub Actions
+Instead of patching locally, you can run the [`Patch APK`](.github/workflows/patch-apk.yml) workflow from the Actions tab. Trigger it manually (`Run workflow`), optionally overriding the `apk_url` input if you want to patch a different apk build. The workflow builds the frida agent, downloads the base apk, runs `patchApk.sh`, and uploads the resulting `patched.apk` as a workflow artifact you can download once the run finishes.
+
 ### Development workflow
 
 ### How to compile & load (Requires a rooted device with [frida server](https://frida.re/docs/android/) installed on the device)
