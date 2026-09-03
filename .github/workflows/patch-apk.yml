@@ -1,0 +1,60 @@
+name: Patch APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      apk_url:
+        description: 'URL to download the base Blockheads apk from'
+        required: false
+        default: 'https://noodlecake.com/wp-content/uploads/2021/02/theblockheads1.7.6.apk'
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Build frida agent
+        run: npm run build
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install objection
+        run: pip install objection
+
+      - name: Install apktool
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apktool
+
+      - name: Add Android build-tools to PATH
+        run: echo "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n1)" >> "$GITHUB_PATH"
+
+      - name: Download base APK
+        run: curl -fL -o base.apk "${{ github.event.inputs.apk_url }}"
+
+      - name: Patch APK
+        run: |
+          chmod +x patchApk.sh
+          ./patchApk.sh
+
+      - name: Upload patched APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: patched-apk
+          path: patched.apk
+          if-no-files-found: error
