@@ -2,7 +2,7 @@
 set -e
 
 # Patch the apk
-objection patchapk -s base.apk -c config.json -m manifest.xml -l _agent.js --architecture armeabi-v7a
+objection patchapk -s base.apk -c config.json -m manifest.xml -l _agent.js --architecture armeabi-v7a -V 16.7.19
 #objection patchapk -s base.apk -N -m manifest.xml --architecture armeabi-v7a
 
 if [ ! -f ./base.objection.apk ]; then
